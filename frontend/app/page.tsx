@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import RoomCodeModal from '@/components/RoomCodeModal';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL
+console.log(BACKEND_URL);
 
 export default function HomePage() {
   const router = useRouter();
