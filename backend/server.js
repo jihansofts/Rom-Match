@@ -27,17 +27,7 @@ const allowedOrigins = (
 // ✅ CORS for REST API
 app.use(
   cors({
-    origin: (origin, cb) => {
-      // Postman/curl requests may not send Origin
-      if (!origin) return cb(null, true);
-
-      if (allowedOrigins.includes(origin)) return cb(null, true);
-
-      return cb(new Error(`CORS blocked for origin: ${origin}`));
-    },
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
+    cors: { origin: ["https://rom-match.vercel.app", "http://localhost:3000"] , credentials: true },
   }),
 );
 
@@ -59,9 +49,6 @@ const io = new Server(server, {
     credentials: true,
   },
 });
-
-// Optional: log which origin is allowed (debug)
-console.log("✅ Allowed CORS origins:", allowedOrigins);
 
 io.on("connection", (socket) => {
   console.log(`✅ User connected: ${socket.id}`);
