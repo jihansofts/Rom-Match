@@ -145,6 +145,7 @@ export default function RoomPage() {
     // ── Send chat message ──────────────────────────────────────────────────────
     const sendMessage = useCallback(
         (message: string) => {
+            console.log(`📤 Sending chat: ${message}`);
             socket.emit('chat-message', { code: roomCode, message, username });
         },
         [socket, roomCode, username]

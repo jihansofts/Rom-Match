@@ -31,12 +31,28 @@ export function useMediaStream() {
             return stream;
         } catch (error) {
             console.error('Failed to get media stream:', error);
-            // Try audio only
+            // Try audio only, but add a dummy video track for WebRTC structure
             try {
                 const audioStream = await navigator.mediaDevices.getUserMedia({
                     video: false,
                     audio: true,
                 });
+
+                // Create a dummy black video track (1x1 pixel)
+                const canvas = document.createElement('canvas');
+                canvas.width = 1;
+                canvas.height = 1;
+                const ctx = canvas.getContext('2d');
+                if (ctx) {
+                    ctx.fillStyle = 'black';
+                    ctx.fillRect(0, 0, 1, 1);
+                }
+                const dummyStream = (canvas as any).captureStream(1);
+                const dummyTrack = dummyStream.getVideoTracks()[0];
+                dummyTrack.enabled = false; // Keep it silent/black
+
+                audioStream.addTrack(dummyTrack);
+
                 setLocalStream(audioStream);
                 setIsMicOn(true);
                 setIsCameraOn(false);

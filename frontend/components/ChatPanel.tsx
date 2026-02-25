@@ -62,10 +62,10 @@ export default function ChatPanel({
 
     return (
         <div
-            className={`fixed top-0 right-0 h-full w-full sm:w-96 z-40 transform transition-transform duration-300 ease-out ${isOpen ? 'translate-x-0' : 'translate-x-full'
+            className={`fixed top-0 right-0 h-full w-full sm:w-96 z-[60] transform transition-transform duration-300 ease-out ${isOpen ? 'translate-x-0' : 'translate-x-full'
                 }`}
         >
-            <div className="h-full flex flex-col bg-slate-900/95 backdrop-blur-xl border-l border-slate-700/50">
+            <div className="h-full flex flex-col bg-slate-900/95 backdrop-blur-xl border-l border-slate-700/50 shadow-2xl">
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b border-slate-700/50">
                     <h3 className="text-lg font-semibold text-white flex items-center gap-2">
@@ -102,8 +102,8 @@ export default function ChatPanel({
                             <div key={i} className={`flex ${isOwn ? 'justify-end' : 'justify-start'}`}>
                                 <div
                                     className={`max-w-[80%] rounded-2xl px-4 py-2.5 ${isOwn
-                                            ? 'bg-indigo-500/90 text-white rounded-br-md'
-                                            : 'bg-slate-700/80 text-slate-100 rounded-bl-md'
+                                        ? 'bg-indigo-500/90 text-white rounded-br-md'
+                                        : 'bg-slate-700/80 text-slate-100 rounded-bl-md'
                                         }`}
                                 >
                                     {!isOwn && (
