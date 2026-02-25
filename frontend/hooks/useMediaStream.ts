@@ -52,7 +52,7 @@ export function useMediaStream() {
                     const dummyStream = (canvas as any).captureStream ? (canvas as any).captureStream(1) : (canvas as any).mozCaptureStream ? (canvas as any).mozCaptureStream(1) : null;
                     if (dummyStream && dummyStream.getVideoTracks().length > 0) {
                         dummyTrack = dummyStream.getVideoTracks()[0];
-                        dummyTrack.enabled = false;
+                        dummyTrack.enabled = true; // MUST be enabled for some browsers to play audio
                     }
                 } catch (e) {
                     console.error('Failed to create dummy track:', e);
