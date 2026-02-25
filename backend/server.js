@@ -15,14 +15,14 @@ const server = http.createServer(app);
 // .env example:
 // CLIENT_URLS=http://localhost:3000,https://rom-match.vercel.app
 // (fallback) CLIENT_URL=https://rom-match.vercel.app
-// const allowedOrigins = (
-//   process.env.CLIENT_URLS ||
-//   process.env.CLIENT_URL ||
-//   "http://localhost:3000"
-// )
-//   .split(",")
-//   .map((s) => s.trim())
-//   .filter(Boolean);
+const allowedOrigins = (
+  process.env.CLIENT_URLS ||
+  process.env.CLIENT_URL ||
+  "http://localhost:3000"
+)
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
 
 // ✅ CORS for REST API
 app.use(
