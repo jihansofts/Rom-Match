@@ -27,10 +27,8 @@ const allowedOrigins = (
 // ✅ CORS for REST API
 app.use(
   cors({
-    origin: "https://rom-match.vercel.app",
-    methods: ["GET", "POST"],
-
-    methods: ["GET", "POST"],
+    origin: allowedOrigins,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     credentials: true,
   }),
 );
