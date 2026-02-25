@@ -39,19 +39,28 @@ export function useMediaStream() {
                 });
 
                 // Create a dummy black video track (1x1 pixel)
-                const canvas = document.createElement('canvas');
-                canvas.width = 1;
-                canvas.height = 1;
-                const ctx = canvas.getContext('2d');
-                if (ctx) {
-                    ctx.fillStyle = 'black';
-                    ctx.fillRect(0, 0, 1, 1);
+                let dummyTrack: MediaStreamTrack | null = null;
+                try {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 1;
+                    canvas.height = 1;
+                    const ctx = canvas.getContext('2d');
+                    if (ctx) {
+                        ctx.fillStyle = 'black';
+                        ctx.fillRect(0, 0, 1, 1);
+                    }
+                    const dummyStream = (canvas as any).captureStream ? (canvas as any).captureStream(1) : (canvas as any).mozCaptureStream ? (canvas as any).mozCaptureStream(1) : null;
+                    if (dummyStream && dummyStream.getVideoTracks().length > 0) {
+                        dummyTrack = dummyStream.getVideoTracks()[0];
+                        dummyTrack.enabled = false;
+                    }
+                } catch (e) {
+                    console.error('Failed to create dummy track:', e);
                 }
-                const dummyStream = (canvas as any).captureStream(1);
-                const dummyTrack = dummyStream.getVideoTracks()[0];
-                dummyTrack.enabled = false; // Keep it silent/black
 
-                audioStream.addTrack(dummyTrack);
+                if (dummyTrack) {
+                    audioStream.addTrack(dummyTrack);
+                }
 
                 setLocalStream(audioStream);
                 setIsMicOn(true);

@@ -38,7 +38,7 @@ export default function VideoTile({
                 autoPlay
                 playsInline
                 muted={isLocal}
-                className={`w-full h-full object-cover ${!hasVideo && !isScreenShare ? 'hidden' : ''}`}
+                className="w-full h-full object-cover"
             />
 
             {/* Avatar fallback when no video */}
