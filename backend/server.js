@@ -118,6 +118,7 @@ io.on("connection", (socket) => {
 
   // ── Screen Share Toggle ─────────────────────────────────────────────────────
   socket.on("screen-share-toggle", ({ code, isSharing }) => {
+    console.log(`🖥️ Screen share update: ${isSharing} in room ${code}`);
     socket.to(code).emit("screen-share-update", {
       socketId: socket.id,
       isSharing,
@@ -126,6 +127,7 @@ io.on("connection", (socket) => {
 
   // ── Chat Message ────────────────────────────────────────────────────────────
   socket.on("chat-message", ({ code, message, username }) => {
+    console.log(`💬 Chat in ${code}: ${username} -> ${message}`);
     io.to(code).emit("chat-message", {
       username,
       message,
