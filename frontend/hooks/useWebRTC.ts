@@ -269,12 +269,26 @@ export function useWebRTC({ socket, roomCode, username, localStream }: UseWebRTC
             const newTrack = kind === 'video' ? newStream.getVideoTracks()[0] : newStream.getAudioTracks()[0];
             if (!newTrack) return;
 
+            const tasks: Promise<unknown>[] = [];
+
             peerConnections.current.forEach((pc) => {
                 const sender = pc.getSenders().find((s) => s.track?.kind === kind);
+
                 if (sender) {
-                    sender.replaceTrack(newTrack);
+                    tasks.push(sender.replaceTrack(newTrack));
+                    return;
                 }
+
+                tasks.push(
+                    Promise.resolve().then(() => {
+                        pc.addTrack(newTrack, newStream);
+                    })
+                );
             });
+
+            if (tasks.length > 0) {
+                await Promise.allSettled(tasks);
+            }
         },
         []
     );

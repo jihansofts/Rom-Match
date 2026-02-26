@@ -62,7 +62,7 @@ export default function ChatPanel({
 
     return (
         <div
-            className={`fixed top-0 right-0 h-full w-full sm:w-96 z-[60] transform transition-transform duration-300 ease-out ${isOpen ? 'translate-x-0' : 'translate-x-full'
+            className={`fixed inset-x-0 top-0 bottom-20 sm:inset-y-0 sm:left-auto sm:w-96 z-[60] transform transition-transform duration-300 ease-out ${isOpen ? 'translate-x-0' : 'translate-x-full'
                 }`}
         >
             <div className="h-full flex flex-col bg-slate-900/95 backdrop-blur-xl border-l border-slate-700/50 shadow-2xl">

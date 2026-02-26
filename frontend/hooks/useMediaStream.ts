@@ -98,7 +98,7 @@ export function useMediaStream() {
         try {
             const stream = await navigator.mediaDevices.getDisplayMedia({
                 video: { cursor: 'always' } as MediaTrackConstraints,
-                audio: false,
+                audio: true,
             });
 
             screenStreamRef.current = stream;

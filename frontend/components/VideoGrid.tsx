@@ -28,21 +28,19 @@ export default function VideoGrid({
     screenStream,
     isLocalScreenSharing,
 }: VideoGridProps) {
-    const totalParticipants = 1 + remoteStreams.length; // local + remote
+    const totalParticipants = 1 + remoteStreams.length;
     const isAnyoneScreenSharing = !!screenShareSocketId || isLocalScreenSharing;
 
-    // ── Determine grid layout ───────────────────────────────────────────────────
     const getGridClass = () => {
         if (isAnyoneScreenSharing) {
-            return 'grid-cols-1 lg:grid-cols-[1fr_280px]';
+            return 'grid-cols-1 xl:grid-cols-[minmax(0,1fr)_320px]';
         }
         if (totalParticipants === 1) return 'grid-cols-1';
         if (totalParticipants === 2) return 'grid-cols-1 md:grid-cols-2';
-        if (totalParticipants <= 4) return 'grid-cols-2';
-        return 'grid-cols-2 lg:grid-cols-3';
+        if (totalParticipants <= 4) return 'grid-cols-1 sm:grid-cols-2';
+        return 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-3';
     };
 
-    // ── Screen share layout ────────────────────────────────────────────────────
     if (isAnyoneScreenSharing) {
         const screenShareStream = isLocalScreenSharing
             ? screenStream
@@ -52,8 +50,7 @@ export default function VideoGrid({
             : remoteStreams.find((s) => s.socketId === screenShareSocketId)?.username || 'Unknown';
 
         return (
-            <div className="w-full h-full grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-3 p-3">
-                {/* Main screen share view */}
+            <div className="w-full h-full grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_320px] gap-3 p-3">
                 <div className="min-h-0">
                     <VideoTile
                         stream={screenShareStream || null}
@@ -62,9 +59,8 @@ export default function VideoGrid({
                     />
                 </div>
 
-                {/* Sidebar with participant videos */}
-                <div className="flex lg:flex-col gap-3 overflow-x-auto lg:overflow-y-auto lg:overflow-x-hidden">
-                    <div className="flex-shrink-0 w-48 lg:w-full aspect-video">
+                <div className="flex xl:flex-col gap-3 overflow-x-auto xl:overflow-y-auto xl:overflow-x-hidden pb-1">
+                    <div className="flex-shrink-0 w-40 sm:w-48 xl:w-full">
                         <VideoTile
                             stream={localStream}
                             username={username}
@@ -73,7 +69,7 @@ export default function VideoGrid({
                         />
                     </div>
                     {remoteStreams.map((remote) => (
-                        <div key={remote.socketId} className="flex-shrink-0 w-48 lg:w-full aspect-video">
+                        <div key={remote.socketId} className="flex-shrink-0 w-40 sm:w-48 xl:w-full">
                             <VideoTile
                                 stream={remote.stream}
                                 username={remote.username}
@@ -85,9 +81,8 @@ export default function VideoGrid({
         );
     }
 
-    // ── Regular grid layout ────────────────────────────────────────────────────
     return (
-        <div className={`w-full h-full grid ${getGridClass()} gap-3 p-3 auto-rows-fr`}>
+        <div className={`w-full h-full grid ${getGridClass()} gap-3 p-3 auto-rows-[minmax(180px,1fr)] sm:auto-rows-[minmax(220px,1fr)]`}>
             <VideoTile
                 stream={localStream}
                 username={username}

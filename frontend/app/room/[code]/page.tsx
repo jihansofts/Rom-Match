@@ -118,23 +118,31 @@ export default function RoomPage() {
     const handleToggleScreenShare = useCallback(async () => {
         if (isScreenSharing) {
             stopScreenShare();
-            // Replace the screen track with camera track in all peer connections
             if (localStream) {
                 await replaceTrack(localStream, 'video');
+                if (localStream.getAudioTracks().length > 0) {
+                    await replaceTrack(localStream, 'audio');
+                }
             }
             socket.emit('screen-share-toggle', { code: roomCode, isSharing: false });
         } else {
             const stream = await startScreenShare();
             if (stream) {
-                // Replace camera track with screen track in all peer connections
                 await replaceTrack(stream, 'video');
+
+                if (stream.getAudioTracks().length > 0) {
+                    await replaceTrack(stream, 'audio');
+                }
+
                 socket.emit('screen-share-toggle', { code: roomCode, isSharing: true });
 
-                // Auto-revert when screen share ends via browser UI
                 stream.getVideoTracks()[0].onended = async () => {
                     stopScreenShare();
                     if (localStream) {
                         await replaceTrack(localStream, 'video');
+                        if (localStream.getAudioTracks().length > 0) {
+                            await replaceTrack(localStream, 'audio');
+                        }
                     }
                     socket.emit('screen-share-toggle', { code: roomCode, isSharing: false });
                 };

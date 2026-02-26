@@ -20,19 +20,30 @@ export default function VideoTile({
     const videoRef = useRef<HTMLVideoElement>(null);
 
     useEffect(() => {
-        if (videoRef.current && stream) {
-            videoRef.current.srcObject = stream;
+        const videoEl = videoRef.current;
+        if (!videoEl) return;
+
+        if (stream) {
+            videoEl.srcObject = stream;
+            const playPromise = videoEl.play();
+            if (playPromise && typeof playPromise.catch === 'function') {
+                playPromise.catch((error) => {
+                    console.warn('Autoplay prevented until user interaction:', error);
+                });
+            }
+            return;
         }
+
+        videoEl.srcObject = null;
     }, [stream]);
 
     const hasVideo = stream?.getVideoTracks().some((t) => t.enabled && t.readyState === 'live');
 
     return (
         <div
-            className={`relative overflow-hidden rounded-2xl bg-slate-800/80 border border-slate-700/50 backdrop-blur-sm group transition-all duration-300 hover:border-indigo-500/50 hover:shadow-lg hover:shadow-indigo-500/10 ${isScreenShare ? 'col-span-full row-span-full' : ''
+            className={`relative overflow-hidden rounded-2xl bg-slate-800/80 border border-slate-700/50 backdrop-blur-sm group transition-all duration-300 hover:border-indigo-500/50 hover:shadow-lg hover:shadow-indigo-500/10 ${isScreenShare ? 'col-span-full row-span-full min-h-[240px]' : 'aspect-video min-h-[180px] sm:min-h-[220px]'
                 }`}
         >
-            {/* Video Element */}
             <video
                 ref={videoRef}
                 autoPlay
@@ -41,16 +52,14 @@ export default function VideoTile({
                 className="w-full h-full object-cover"
             />
 
-            {/* Avatar fallback when no video */}
             {!hasVideo && !isScreenShare && (
                 <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-20 h-20 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-3xl font-bold text-white shadow-lg shadow-indigo-500/30">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-2xl sm:text-3xl font-bold text-white shadow-lg shadow-indigo-500/30">
                         {username.charAt(0).toUpperCase()}
                     </div>
                 </div>
             )}
 
-            {/* Username Label */}
             <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/70 to-transparent">
                 <div className="flex items-center gap-2">
                     <span className="text-sm font-medium text-white truncate">
@@ -64,7 +73,6 @@ export default function VideoTile({
                 </div>
             </div>
 
-            {/* Muted Indicator */}
             {isMuted && (
                 <div className="absolute top-3 right-3 bg-red-500/90 backdrop-blur-sm rounded-full p-1.5 shadow-lg">
                     <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -74,7 +82,6 @@ export default function VideoTile({
                 </div>
             )}
 
-            {/* Local indicator */}
             {isLocal && (
                 <div className="absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-opacity">
                     <span className="text-xs bg-emerald-500/80 backdrop-blur-sm text-white px-2 py-1 rounded-full">
